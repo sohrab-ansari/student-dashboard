@@ -1,7 +1,9 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
-import '../../controllers/student_controller.dart';
-import '../../models/task_model.dart';
-import '../../services/task_service.dart';
+import 'package:student_dashboard/controllers/student_controller.dart';
+import 'package:student_dashboard/models/task_model.dart';
+import 'package:student_dashboard/services/task_service.dart';
 
 class StudentTasksScreen extends StatefulWidget {
   const StudentTasksScreen({super.key});
@@ -17,9 +19,19 @@ class _StudentTasksScreenState extends State<StudentTasksScreen> {
 
   bool isLoading = true;
 
+  // @override
+  // void initState() {
+  //   super.initState();
+
+  //   loadTasks();
+  // }
+
   @override
   void initState() {
     super.initState();
+
+    print("Student Tasks Screen Opened");
+
     loadTasks();
   }
 
@@ -27,20 +39,31 @@ class _StudentTasksScreenState extends State<StudentTasksScreen> {
     try {
       final student = StudentController.instance.currentStudent.value;
 
-      if (student == null || student.id == null) {
+      print("Current Student: $student");
+      print("Student ID: ${student?.studentId}");
+
+      if (student == null || student.studentId == null) {
+        print("Student not found");
         return;
       }
 
-      final data = await _taskService.fetchTasks(student.id!);
+      final data = await _taskService.fetchTasks(student.studentId!);
+
+      print("Fetched Tasks: $data");
+
       setState(() {
         tasks = data.map((e) => TaskModel.fromMap(e)).toList();
       });
+
+      print("Task Count: ${tasks.length}");
     } catch (e) {
       print("TASK FETCH ERROR: $e");
     } finally {
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -97,8 +120,8 @@ class _StudentTasksScreenState extends State<StudentTasksScreen> {
                                 backgroundColor: task.status == 'Completed'
                                     ? Colors.green.shade100
                                     : overdue
-                                        ? Colors.red.shade100
-                                        : Colors.orange.shade100,
+                                    ? Colors.red.shade100
+                                    : Colors.orange.shade100,
                               ),
                             ],
                           ),
@@ -113,15 +136,22 @@ class _StudentTasksScreenState extends State<StudentTasksScreen> {
                           const SizedBox(height: 12),
                           Row(
                             children: [
-                              Icon(Icons.schedule,
-                                  size: 16, color: overdue ? Colors.red : Colors.grey),
+                              Icon(
+                                Icons.schedule,
+                                size: 16,
+                                color: overdue ? Colors.red : Colors.grey,
+                              ),
                               const SizedBox(width: 4),
                               Text(
                                 _formatDeadline(task.deadline),
                                 style: TextStyle(
                                   fontSize: 13,
-                                  color: overdue ? Colors.red : Colors.grey.shade600,
-                                  fontWeight: overdue ? FontWeight.w600 : FontWeight.normal,
+                                  color: overdue
+                                      ? Colors.red
+                                      : Colors.grey.shade600,
+                                  fontWeight: overdue
+                                      ? FontWeight.w600
+                                      : FontWeight.normal,
                                 ),
                               ),
                               if (overdue && task.status != 'Completed')
@@ -129,7 +159,9 @@ class _StudentTasksScreenState extends State<StudentTasksScreen> {
                               if (overdue && task.status != 'Completed')
                                 Container(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 6, vertical: 2),
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: Colors.red.shade50,
                                     borderRadius: BorderRadius.circular(4),

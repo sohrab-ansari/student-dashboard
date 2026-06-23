@@ -1,9 +1,3 @@
-// await TaskService().assignTask(
-//   studentId: selectedStudentId,
-//   title: titleController.text,
-//   description: descriptionController.text,
-// );
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -77,21 +71,11 @@ class _AssignTaskScreenState extends State<AssignTaskScreen> {
         isLoading = true;
       });
 
-      // await _taskService.assignTask(
-      //   studentId: selectedStudent!.id!,
-      //   title: _titleController.text.trim(),
-      //   description: _descriptionController.text.trim(),
-      // );
-      // await _taskService.assignTask(
-      //   studentId: selectedStudent!.id!,
-      //   title: _titleController.text.trim(),
-      //   description: _descriptionController.text.trim(),
-      // );
       await _taskService.assignTask(
-        studentId: selectedStudent!.id!,
+        studentId: selectedStudent!.studentId!,
         title: _titleController.text.trim(),
         description: _descriptionController.text.trim(),
-        deadline: _deadline,
+        dueDate: _deadline,
       );
 
       SnackBarHelper.show("Task assigned successfully");

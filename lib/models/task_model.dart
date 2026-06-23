@@ -22,9 +22,10 @@ class TaskModel {
       title: map['title'] ?? '',
       description: map['description'],
       status: map['status'] ?? 'Pending',
-      deadline: map['deadline'] != null
-          ? DateTime.tryParse(map['deadline'].toString())
+      deadline: map['due_date'] != null
+          ? DateTime.parse(map['due_date'])
           : null,
+          
     );
   }
 
@@ -34,7 +35,8 @@ class TaskModel {
       'title': title,
       'description': description,
       'status': status,
-      if (deadline != null) 'deadline': deadline!.toIso8601String(),
+      if (deadline != null)
+        'due_date': deadline!.toIso8601String(),
     };
   }
 }

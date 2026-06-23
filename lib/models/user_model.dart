@@ -64,6 +64,8 @@ class UserModel {
     this.createdAt,
   });
 
+  int? get studentId => id != null ? int.tryParse(id!) : null;
+
   bool get isAdmin => role == 'admin';
 
   bool get isStudent => role != 'admin';

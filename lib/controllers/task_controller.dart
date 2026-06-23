@@ -16,8 +16,9 @@ class TaskController extends GetxController {
       isLoading = true;
       update();
 
-      tasks.value =
-          (await _taskService.fetchTasks(studentId)).cast<TaskModel>();
+      tasks.value = (await _taskService.fetchTasks(
+        studentId as int,
+      )).cast<TaskModel>();
     } finally {
       isLoading = false;
       update();
