@@ -19,13 +19,6 @@ class _StudentTasksScreenState extends State<StudentTasksScreen> {
 
   bool isLoading = true;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-
-  //   loadTasks();
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -48,6 +41,11 @@ class _StudentTasksScreenState extends State<StudentTasksScreen> {
       }
 
       final data = await _taskService.fetchTasks(student.studentId!);
+
+      print("TASKS FOR THIS STUDENT ONLY:");
+      for (var task in data) {
+        print(task['student_id']);
+      }
 
       print("Fetched Tasks: $data");
 

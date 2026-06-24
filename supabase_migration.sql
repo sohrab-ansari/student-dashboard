@@ -29,10 +29,21 @@ CREATE TABLE IF NOT EXISTS public.complaints (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
+CREATE TABLE IF NOT EXISTS public.tasks (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  student_id UUID REFERENCES students(id) ON DELETE CASCADE,
+  title TEXT,
+  description TEXT,
+  status TEXT DEFAULT 'Pending',
+  due_date TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
 -- 2. Enable Row Level Security
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.students ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.complaints ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.tasks ENABLE ROW LEVEL SECURITY;
 
 -- 3. Drop existing policies to avoid conflicts
 DROP POLICY IF EXISTS "Profiles select" ON public.profiles;
@@ -44,6 +55,10 @@ DROP POLICY IF EXISTS "Students delete" ON public.students;
 DROP POLICY IF EXISTS "Complaints select" ON public.complaints;
 DROP POLICY IF EXISTS "Complaints insert" ON public.complaints;
 DROP POLICY IF EXISTS "Complaints update" ON public.complaints;
+DROP POLICY IF EXISTS "Tasks select" ON public.tasks;
+DROP POLICY IF EXISTS "Tasks insert" ON public.tasks;
+DROP POLICY IF EXISTS "Tasks update" ON public.tasks;
+DROP POLICY IF EXISTS "Tasks delete" ON public.tasks;
 
 -- 4. Profiles policies
 CREATE POLICY "Profiles select"
@@ -93,7 +108,28 @@ CREATE POLICY "Complaints update"
   TO authenticated
   USING (true);
 
--- 7. Set your admin email role (CHANGE TO YOUR ACTUAL ADMIN EMAIL)
+-- 7. Tasks policies
+CREATE POLICY "Tasks select"
+  ON public.tasks FOR SELECT
+  TO authenticated
+  USING (true);
+
+CREATE POLICY "Tasks insert"
+  ON public.tasks FOR INSERT
+  TO authenticated
+  WITH CHECK (true);
+
+CREATE POLICY "Tasks update"
+  ON public.tasks FOR UPDATE
+  TO authenticated
+  USING (true);
+
+CREATE POLICY "Tasks delete"
+  ON public.tasks FOR DELETE
+  TO authenticated
+  USING (true);
+
+-- 8. Set your admin email role (CHANGE TO YOUR ACTUAL ADMIN EMAIL)
 UPDATE public.profiles
 SET role = 'admin'
 WHERE email = 'developersohrab5564@gmail.com';

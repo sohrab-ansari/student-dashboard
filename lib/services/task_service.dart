@@ -12,14 +12,6 @@ class TaskService {
     required String description,
     DateTime? dueDate,
   }) async {
-    if (title.trim().isEmpty) {
-      throw Exception('Title cannot be empty');
-    }
-
-    if (description.trim().isEmpty) {
-      throw Exception('Description cannot be empty');
-    }
-
     final data = {
       'student_id': studentId,
       'title': title.trim(),
@@ -31,59 +23,27 @@ class TaskService {
     try {
       await _supabase.client.from('tasks').insert(data);
     } on PostgrestException catch (e) {
-      debugPrint('Assign Task Error: ${e.message}');
+      debugPrint(e.message);
       rethrow;
     }
   }
 
-  // Future<List<Map<String, dynamic>>> fetchTasks(int studentId) async {
-  //   try {
-  //     final response = await _supabase.client
-  //         .from('tasks')
-  //         .select()
-  //         .eq('student_id', studentId)
-  //         .order('id', ascending: true);
-
-  //     return List<Map<String, dynamic>>.from(response);
-  //   } on PostgrestException catch (e) {
-  //     debugPrint('Fetch Tasks Error: ${e.message}');
-  //     rethrow;
-  //   }
-  // }
-
-  // Future<List<Map<String, dynamic>>> fetchTasks(int studentId) async {
-  //   final response = await _supabase.client
-  //       .from('tasks')
-  //       .select()
-  //       .eq('student_id', studentId)
-  //       .order('id', ascending: true);
-
-  //   return List<Map<String, dynamic>>.from(response);
-  // }
-
-  // Future<List<Map<String, dynamic>>> fetchTasks(int studentId) async {
-  //   final response = await _supabase.client
-  //       .from('tasks')
-  //       .select()
-  //       .eq('student_id', studentId)
-  //       .order('id', ascending: true);
-
-  //   print("TASK DATA: $response");
-
-  //   return List<Map<String, dynamic>>.from(response);
-  // }
-
   Future<List<Map<String, dynamic>>> fetchTasks(int studentId) async {
     try {
-      print("FETCHING TASKS FOR: $studentId");
+      print("LOGIN STUDENT ID => $studentId");
 
-      final response = await _supabase.client.from('tasks').select('*');
+      final response = await _supabase.client
+          .from('tasks')
+          .select()
+          .eq('student_id', studentId)
+          .order('id', ascending: false);
 
-      print("RAW TASK RESPONSE: $response");
+      print("ONLY STUDENT TASKS => $response");
 
       return List<Map<String, dynamic>>.from(response);
     } catch (e) {
-      print("FETCH ERROR: $e");
+      print("TASK FETCH ERROR => $e");
+
       rethrow;
     }
   }
@@ -92,23 +52,13 @@ class TaskService {
     required int taskId,
     required String status,
   }) async {
-    try {
-      await _supabase.client
-          .from('tasks')
-          .update({'status': status})
-          .eq('id', taskId);
-    } on PostgrestException catch (e) {
-      debugPrint('Update Task Error: ${e.message}');
-      rethrow;
-    }
+    await _supabase.client
+        .from('tasks')
+        .update({'status': status})
+        .eq('id', taskId);
   }
 
   Future<void> deleteTask(int taskId) async {
-    try {
-      await _supabase.client.from('tasks').delete().eq('id', taskId);
-    } on PostgrestException catch (e) {
-      debugPrint('Delete Task Error: ${e.message}');
-      rethrow;
-    }
+    await _supabase.client.from('tasks').delete().eq('id', taskId);
   }
 }

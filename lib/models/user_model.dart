@@ -107,7 +107,6 @@ class UserModel {
       'email': email,
       'course': course,
       'student_code': studentCode,
-      'role': role,
       if (createdAt != null) 'created_at': createdAt,
     };
   }

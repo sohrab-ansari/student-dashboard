@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import '../models/task_model.dart';
-import '../services/task_service.dart';
+import 'package:student_dashboard/models/task_model.dart';
+import 'package:student_dashboard/services/task_service.dart';
 
 class TaskController extends GetxController {
   static TaskController get instance => Get.find();
